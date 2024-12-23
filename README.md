@@ -13,7 +13,7 @@ A simple web interface for uploading CSV subscriber data to BigCommerce. Built w
 
 1. **Clone this Repository**  
    ```bash
-   git clone https://github.com/your-username/subscriber-importer-next-app.git
+   git clone https://github.com/Pop-Morris/Importer-Next-GUI.git
    ```
 2. **Install Dependencies**  
    ```bash
