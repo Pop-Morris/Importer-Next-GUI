@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Subscriber Importer (Next.js + Tailwind)
+
+A simple web interface for uploading CSV subscriber data to BigCommerce. Built with **Next.js** (App Router) and styled using **Tailwind CSS**.
+
+## Features
+
+- **CSV Upload**: Easily upload your `.csv` file containing subscriber info.
+- **Credentials Input**: Enter your BigCommerce `store_hash` and `auth_token`.
+- **Sequential POST Requests**: Sends subscriber data to the BigCommerce API one by one.
+- **Tailwind Styling**: Clean, modern UI components.
 
 ## Getting Started
 
-First, run the development server:
+1. **Clone this Repository**  
+   ```bash
+   git clone https://github.com/your-username/subscriber-importer-next-app.git
+   ```
+2. **Install Dependencies**  
+   ```bash
+   cd subscriber-importer-next-app
+   npm install
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+3. **Run Dev Server**  
+   ```bash
+   npm run dev
+   ```
+## Usage
+1. Enter Credentials: Provide your BigCommerce store_hash and auth_token.
+2. Select CSV File: Click “Choose File” and pick a .csv.
+3. Upload & Process: Click “Upload & Process” to parse and send subscribers to BigCommerce.
+
+## Project Structure
+
 ```
+subscriber-importer-next-app/
+├─ src/
+│  ├─ app/
+│  │  ├─ page.js          
+│  │  └─ api/
+│  │     └─ process-csv/
+│  │        └─ route.js   # API route for processing CSV
+├─ public/
+├─ styles/                
+├─ .gitignore
+├─ package.json
+└─ tailwind.config.js
+```
+## Dependencies
+* Next.js: React framework for production
+* React: JavaScript library for building user interfaces
+* Tailwind CSS: Utility-first CSS framework
+* csv-parse: For parsing CSV content
+* axios: For making HTTP requests to BigCommerce
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+  
