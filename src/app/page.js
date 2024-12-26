@@ -21,8 +21,6 @@ export default function HomePage() {
     const reader = new FileReader();
     reader.onload = async () => {
       const fileContent = reader.result;
-
-      // Call the API endpoint
       const response = await fetch('/api/process-csv', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -37,63 +35,82 @@ export default function HomePage() {
   };
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold mb-4">Subscriber Importer</h1>
-      <p className="mb-6">
-        Enter your BigCommerce credentials and select a CSV to upload:
-      </p>
+    <div className="min-h-screen bg-bc-background">
+      <div className="max-w-2xl mx-auto p-8">
+        <h1 className="text-[28px] font-normal text-bc-text mb-2">
+          Subscriber Importer
+        </h1>
+        <p className="text-bc-text-secondary text-[14px] mb-6">
+          Enter your BigCommerce credentials and select a CSV to upload:
+        </p>
 
-      {/* Store Hash */}
-      <div className="mb-4">
-        <label className="block mb-2 text-gray-700">
-          Store Hash
-        </label>
-        <input
-          type="text"
-          value={storeHash}
-          onChange={(e) => setStoreHash(e.target.value)}
-          className="w-full rounded-md border border-gray-300 bg-white text-black px-3 py-2 
-                     focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-        />
+        <div className="bg-white p-6 rounded shadow-sm border border-bc-border">
+          <div className="space-y-6">
+            {/* Store Hash */}
+            <div>
+              <label className="block text-[14px] font-semibold text-bc-text mb-2">
+                Store Hash
+              </label>
+              <input
+                type="text"
+                value={storeHash}
+                onChange={(e) => setStoreHash(e.target.value)}
+                placeholder="Enter store hash"
+                className="w-full h-[38px] px-3 border border-bc-border rounded bg-white text-bc-text
+                         focus:outline-none focus:ring-2 focus:ring-bc-blue focus:border-bc-blue"
+              />
+            </div>
+
+            {/* Auth Token */}
+            <div>
+              <label className="block text-[14px] font-semibold text-bc-text mb-2">
+                Auth Token
+              </label>
+              <input
+                type="text"
+                value={authToken}
+                onChange={(e) => setAuthToken(e.target.value)}
+                placeholder="Enter auth token"
+                className="w-full h-[38px] px-3 border border-bc-border rounded bg-white text-bc-text
+                         focus:outline-none focus:ring-2 focus:ring-bc-blue focus:border-bc-blue"
+              />
+            </div>
+
+            {/* File Input */}
+            <div>
+              <label className="block text-[14px] font-semibold text-bc-text mb-2">
+                CSV File
+              </label>
+              <input
+                type="file"
+                accept=".csv"
+                onChange={handleFileChange}
+                className="block w-full text-bc-text text-[14px]
+                         file:mr-4 file:py-2 file:px-4
+                         file:rounded file:border-0
+                         file:text-[14px] file:font-semibold
+                         file:text-white
+                         file:bg-gradient-to-r file:from-[#3C64F4] file:to-[#462DFF]
+                         hover:file:from-[#2852EB] hover:file:to-[#3421D9]
+                         file:transition-all file:duration-300
+                         cursor-pointer"
+              />
+            </div>
+
+            <button
+              onClick={handleSubmit}
+              disabled={!storeHash || !authToken || !selectedFile}
+              className="w-full h-[38px] bg-bc-blue text-white rounded
+                       hover:bg-bc-blue-hover transition-colors
+                       focus:outline-none focus:ring-2 focus:ring-bc-blue focus:ring-offset-2
+                       disabled:bg-bc-disabled disabled:text-bc-disabled-text disabled:cursor-not-allowed
+                       text-[14px] font-semibold"
+            >
+              Upload & Process
+            </button>
+          </div>
+        </div>
       </div>
-
-      {/* Auth Token */}
-      <div className="mb-4">
-        <label className="block mb-2 text-gray-700">
-          Auth Token
-        </label>
-        <input
-          type="text"
-          value={authToken}
-          onChange={(e) => setAuthToken(e.target.value)}
-          className="w-full rounded-md border border-gray-300 bg-white text-black px-3 py-2
-                     focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-        />
-      </div>
-
-      {/* CSV File Input */}
-      <div className="mb-6">
-        <label className="block mb-2 text-gray-700">
-          CSV File
-        </label>
-        <input
-          type="file"
-          accept=".csv"
-          onChange={handleFileChange}
-          className="file:mr-4 file:py-2 file:px-4 file:border-0 
-                     file:text-sm file:font-semibold
-                     file:bg-indigo-50 file:text-indigo-700
-                     hover:file:bg-indigo-100"
-        />
-      </div>
-
-      {/* Submit Button */}
-      <button
-        onClick={handleSubmit}
-        className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
-      >
-        Upload & Process
-      </button>
     </div>
   );
 }
