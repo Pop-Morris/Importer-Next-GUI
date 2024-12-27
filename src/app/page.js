@@ -39,7 +39,7 @@ export default function HomePage() {
         alert('Process Complete!');
         setResults(result);
       } catch (error) {
-        setResults({ error: 'Failed to process the file. Please try again.' });
+        setResults({ error: 'Failed to process the file. Please try again in a moment.' });
       } finally {
         setIsProcessing(false);
       }
