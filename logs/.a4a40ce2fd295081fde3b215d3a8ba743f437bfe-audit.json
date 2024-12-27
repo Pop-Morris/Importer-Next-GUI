@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 1
+    },
+    "auditLog": "/home/mason/Desktop/appChanges/newAddLogging/Importer-Next-GUI/logs/.a4a40ce2fd295081fde3b215d3a8ba743f437bfe-audit.json",
+    "files": [
+        {
+            "date": 1735281522560,
+            "name": "/home/mason/Desktop/appChanges/newAddLogging/Importer-Next-GUI/logs/combined-2024-12-27.log",
+            "hash": "90f73c58c8dd80a6ce6f3ed169e4b703fad0d3467eac6c93cacb16e61a027adf"
+        }
+    ],
+    "hashType": "sha256"
+}

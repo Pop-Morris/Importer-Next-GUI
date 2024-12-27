@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { parse } from 'csv-parse/sync';
 import axios from 'axios';
+import logger from '@/lib/logger';
 
 // Add a utility function to sanitize sensitive data for logging
 function sanitizeErrorForLogging(error, sensitiveKeys = ['X-Auth-Token', 'authToken']) {
@@ -30,9 +31,11 @@ function sanitizeErrorForLogging(error, sensitiveKeys = ['X-Auth-Token', 'authTo
 
 export async function POST(request) {
   try {
+    logger.info('Starting CSV processing');
     const { storeHash, authToken, fileContent } = await request.json();
 
     if (!storeHash || !authToken || !fileContent) {
+      logger.warn('Missing required fields in request');
       return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 });
     }
 
@@ -87,7 +90,20 @@ export async function POST(request) {
       try {
         const response = await axios.post(apiEndpoint, subscriber, { headers: apiHeaders });
         results.push({ email: subscriber.email, status: response.status });
+        logger.info(`Successfully added subscriber`, {
+          email: subscriber.email,
+          status: response.status
+        });
       } catch (error) {
+        logger.error(`Failed to add subscriber`, {
+          email: subscriber.email,
+          error: {
+            status: error.response?.status,
+            statusText: error.response?.statusText,
+            details: error.response?.data
+          }
+        });
+        
         // Sanitize error before adding to results
         const sanitizedError = error.response ? 
           sanitizeErrorForLogging(error.response) : 
@@ -100,11 +116,12 @@ export async function POST(request) {
       }
     }
 
+    logger.info('CSV processing completed', { totalProcessed: results.length });
     return NextResponse.json({ message: 'All requests processed.', results });
   } catch (error) {
-    // Sanitize any critical errors before logging
-    const sanitizedError = sanitizeErrorForLogging(error);
-    console.error('Critical error:', sanitizedError);
+    logger.error('Critical error during CSV processing', {
+      error: sanitizeErrorForLogging(error)
+    });
     return NextResponse.json({ error: 'An internal server error occurred' }, { status: 500 });
   }
 }
