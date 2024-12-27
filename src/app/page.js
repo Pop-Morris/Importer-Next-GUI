@@ -6,10 +6,13 @@ export default function HomePage() {
   const [storeHash, setStoreHash] = useState('');
   const [authToken, setAuthToken] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
+  const [results, setResults] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
+    setResults(null); // Clear previous results
   };
 
   const handleSubmit = async () => {
@@ -18,18 +21,28 @@ export default function HomePage() {
       return;
     }
 
+    setIsProcessing(true);
+    setResults(null);
+
     const reader = new FileReader();
     reader.onload = async () => {
-      const fileContent = reader.result;
-      const response = await fetch('/api/process-csv', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ storeHash, authToken, fileContent }),
-      });
+      try {
+        const fileContent = reader.result;
+        const response = await fetch('/api/process-csv', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ storeHash, authToken, fileContent }),
+        });
 
-      const result = await response.json();
-      console.log('Result:', result);
-      alert('Process Complete! Check the console for details.');
+        const result = await response.json();
+        console.log('Result:', result);
+        alert('Process Complete! Check the console for details.');
+        setResults(result);
+      } catch (error) {
+        setResults({ error: 'Failed to process the file. Please try again.' });
+      } finally {
+        setIsProcessing(false);
+      }
     };
     reader.readAsText(selectedFile);
   };
@@ -110,6 +123,44 @@ export default function HomePage() {
             </button>
           </div>
         </div>
+
+        {/* Add Results Section */}
+        {isProcessing && (
+          <div className="mt-6 p-4 bg-white rounded shadow-sm border border-bc-border">
+            <p className="text-bc-text">Processing subscribers...</p>
+          </div>
+        )}
+
+        {results && (
+          <div className="mt-6 p-4 bg-white rounded shadow-sm border border-bc-border">
+            <h2 className="text-[18px] font-semibold text-bc-text mb-4">Results</h2>
+            
+            {results.error ? (
+              <div className="text-red-600 text-[14px]">{results.error}</div>
+            ) : (
+              <>
+                <p className="text-bc-text-secondary text-[14px] mb-4">{results.message}</p>
+                <div className="space-y-2">
+                  {results.results?.map((result, index) => (
+                    <div 
+                      key={index}
+                      className={`p-2 rounded text-[14px] ${
+                        result.error 
+                          ? 'bg-red-50 text-red-700 border border-red-200' 
+                          : 'bg-green-50 text-green-700 border border-green-200'
+                      }`}
+                    >
+                      <span className="font-medium">{result.email}: </span>
+                      {result.error 
+                        ? `Error - ${JSON.stringify(result.error)}` 
+                        : `Success (Status: ${result.status})`}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
