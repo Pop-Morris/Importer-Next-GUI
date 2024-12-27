@@ -36,7 +36,7 @@ export default function HomePage() {
 
         const result = await response.json();
         console.log('Result:', result);
-        alert('Process Complete! Check the console for details.');
+        alert('Process Complete!');
         setResults(result);
       } catch (error) {
         setResults({ error: 'Failed to process the file. Please try again.' });

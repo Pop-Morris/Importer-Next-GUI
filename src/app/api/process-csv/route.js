@@ -2,6 +2,32 @@ import { NextResponse } from 'next/server';
 import { parse } from 'csv-parse/sync';
 import axios from 'axios';
 
+// Add a utility function to sanitize sensitive data for logging
+function sanitizeErrorForLogging(error, sensitiveKeys = ['X-Auth-Token', 'authToken']) {
+  if (!error) return 'Unknown error';
+
+  // Handle axios errors
+  if (error.response) {
+    const sanitizedResponse = { ...error.response };
+    if (sanitizedResponse.config) {
+      // Remove sensitive headers
+      sanitizedResponse.config = {
+        ...sanitizedResponse.config,
+        headers: Object.fromEntries(
+          Object.entries(sanitizedResponse.config.headers || {}).map(([key, value]) => [
+            key,
+            sensitiveKeys.includes(key) ? '[REDACTED]' : value
+          ])
+        )
+      };
+    }
+    return sanitizedResponse;
+  }
+
+  // Handle regular errors
+  return error.message || 'Unknown error';
+}
+
 export async function POST(request) {
   try {
     const { storeHash, authToken, fileContent } = await request.json();
@@ -62,16 +88,23 @@ export async function POST(request) {
         const response = await axios.post(apiEndpoint, subscriber, { headers: apiHeaders });
         results.push({ email: subscriber.email, status: response.status });
       } catch (error) {
+        // Sanitize error before adding to results
+        const sanitizedError = error.response ? 
+          sanitizeErrorForLogging(error.response) : 
+          error.message;
+          
         results.push({ 
           email: subscriber.email, 
-          error: error.response ? error.response.data : error.message 
+          error: sanitizedError
         });
       }
     }
 
     return NextResponse.json({ message: 'All requests processed.', results });
   } catch (error) {
-    console.error('Critical error:', error.message);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    // Sanitize any critical errors before logging
+    const sanitizedError = sanitizeErrorForLogging(error);
+    console.error('Critical error:', sanitizedError);
+    return NextResponse.json({ error: 'An internal server error occurred' }, { status: 500 });
   }
 }
