@@ -47,3 +47,14 @@ next-env.d.ts
 .env.production
 .env*.local
 
+# Logs
+logs/
+*.log
+*-audit.json
+error-*.log
+combined-*.log
+
+# Winston daily rotate logs
+logs/*-%DATE%.log
+logs/*.log.*
+
